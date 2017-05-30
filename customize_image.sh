@@ -149,7 +149,10 @@ rm $IMAGEDIR/var/lib/apt/lists/*Packages
 # install local packages
 HAVE_DEBS=$(/bin/ls $BAKERYDIR/debs-to-install/*.deb 2>/dev/null)
 if [ ! -z "$HAVE_DEBS" ] ; then
-	dpkg --root $IMAGEDIR -i $BAKERYDIR/debs-to-install/*.deb
+	mkdir $IMAGEDIR/tmp/debs.$$
+	cp $BAKERYDIR/debs-to-install/*.deb $IMAGEDIR/tmp/debs.$$
+	chroot $IMAGEDIR dpkg -i /tmp/debs.$$/*.deb
+	rm -rf $IMAGEDIR/tmp/debs.$$
 fi
 
 # remove logs
