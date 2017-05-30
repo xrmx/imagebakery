@@ -156,7 +156,7 @@ HAVE_DEBS=$(/bin/ls $BAKERYDIR/debs-to-install/*.deb 2>/dev/null)
 if [ ! -z "$HAVE_DEBS" ] ; then
 	mkdir $IMAGEDIR/tmp/debs.$$
 	cp $BAKERYDIR/debs-to-install/*.deb $IMAGEDIR/tmp/debs.$$
-	chroot $IMAGEDIR dpkg -i /tmp/debs.$$/*.deb
+	chroot $IMAGEDIR dpkg -i /tmp/debs.$$/'*.deb'
 	rm -rf $IMAGEDIR/tmp/debs.$$
 fi
 
