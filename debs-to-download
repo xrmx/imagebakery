@@ -2,8 +2,6 @@ raspberrypi-kernel
 revpi-firmware
 revpi-repo
 revpi-tunnel
-revpi-webstatus
-pictory
 piserial
 pitest
 pimodbus-master
