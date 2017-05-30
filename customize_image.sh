@@ -142,7 +142,8 @@ rm $IMAGEDIR/etc/rc2.d/S01apply_noobs_os_config
 rm $IMAGEDIR/var/lib/apt/lists/*Packages
 
 # install local packages
-if [ $(/bin/ls $BAKERYDIR/debs-to-install/*.deb 2>/dev/null) ] ; then
+HAVE_DEBS=$(/bin/ls $BAKERYDIR/debs-to-install/*.deb 2>/dev/null)
+if [ ! -z "$HAVE_DEBS" ] ; then
 	dpkg --root $IMAGEDIR -i $BAKERYDIR/debs-to-install/*.deb
 fi
 
