@@ -11,6 +11,9 @@ set -ex
 IMAGEDIR=/tmp/img.$$
 BAKERYDIR=`dirname $0`
 LOOPDEVICE=$(losetup -f)
+if [ -z "$CONFIGURE_APACHE2" ] ; then
+    CONFIGURE_APACHE2="yes"
+fi
 
 # mount ext4 + FAT filesystems
 losetup "$LOOPDEVICE" $1
@@ -116,15 +119,17 @@ dpkg --root $IMAGEDIR --force-depends --purge pixel-wallpaper
 chroot $IMAGEDIR apt-get -y install revpi-wallpaper
 chroot $IMAGEDIR apt-get clean
 
-# annoyingly, the postinstall script starts apache2 on fresh installs
-mount -t proc procfs $IMAGEDIR/proc
-chroot $IMAGEDIR /etc/init.d/apache2 stop
-umount $IMAGEDIR/proc
+if [ "$CONFIGURE_APACHE2" != "no" ] ; then
+	# annoyingly, the postinstall script starts apache2 on fresh installs
+	mount -t proc procfs $IMAGEDIR/proc
+	chroot $IMAGEDIR /etc/init.d/apache2 stop
+	umount $IMAGEDIR/proc
 
-# configure apache2
-chroot $IMAGEDIR a2enmod ssl
-sed -r -i -e 's/^(\tOptions .*Indexes.*)/#\1/'		\
-	$IMAGEDIR/etc/apache2/apache2.conf
+	# configure apache2
+	chroot $IMAGEDIR a2enmod ssl
+	sed -r -i -e 's/^(\tOptions .*Indexes.*)/#\1/'		\
+		$IMAGEDIR/etc/apache2/apache2.conf
+fi
 
 # enable ssh daemon by default, disable swap
 chroot $IMAGEDIR systemctl enable ssh
