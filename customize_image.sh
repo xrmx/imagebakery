@@ -155,6 +155,12 @@ if [ ! -z "$HAVE_DEBS" ] ; then
 	rm -rf $IMAGEDIR/tmp/debs.$$
 fi
 
+# kill qemu processes that don't let us unmount the dir
+QEMU_PIDS=$(lsof $IMAGEDIR | grep qemu-arm-static | cut -f 2 -d " ")
+if [ ! -z "$QEMU_PIDS" ] ; then
+    kill "$QEMU_PIDS"
+fi
+
 # remove logs
 find $IMAGEDIR/var/log -type f -delete
 
